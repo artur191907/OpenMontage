@@ -34,5 +34,72 @@
     "duration": 0.8,
     "provider": "elevenlabs",
     "model": "eleven_text_to_sound_v2"
+  },
+  "door_slam": {
+    "prompt": "Wooden wardrobe doors slammed shut hard, cartoon bang with slight rattle",
+    "duration": 0.8,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "knock_inside": {
+    "prompt": "Two muffled thumps knocking from inside a closed wooden wardrobe, cartoon bonk bonk",
+    "duration": 1.0,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "mop_knock": {
+    "prompt": "Three angry muffled knocks on the ceiling from the apartment below with a mop handle, heard through the floor",
+    "duration": 1.4,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "crickets": {
+    "prompt": "Awkward silence crickets chirping, comedic, quiet room",
+    "duration": 1.2,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "door_open": {
+    "prompt": "Apartment front door opening with a short creak and a bright comedic ding",
+    "duration": 1.0,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "slurp": {
+    "prompt": "Single loud tea slurp from a mug, comedic",
+    "duration": 0.7,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "record_scratch": {
+    "prompt": "Vinyl record scratch stop, comedic",
+    "duration": 0.6,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "pop_lid": {
+    "prompt": "Cartoon cork pop as a wooden lid flies off, comedic boing",
+    "duration": 0.7,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "sad_trombone": {
+    "prompt": "Short sad trombone wah wah wah fail, comedic",
+    "duration": 1.6,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "box_slide": {
+    "prompt": "Cardboard box sliding fast across a wooden floor and stopping with a thud",
+    "duration": 0.9,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "room_tone": {
+    "prompt": "Quiet apartment room tone: soft refrigerator hum, faint distant city traffic through a window, no voices, no music",
+    "duration": 12,
+    "loop": true,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
   }
 }

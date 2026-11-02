@@ -4,7 +4,8 @@ import { Audio } from "@remotion/media";
 import { FPS, Line, blink, isTalking, landing, mix, mixP, ramp, springAt, visemeAt, wobble } from "./parts/anim";
 import { Tolik, HIPS_L, HIPS_R, RUB_L, RUB_R, THROW_R, POINT_UP_R } from "./parts/Tolik";
 import { Gena } from "./parts/Gena";
-import { AssemblyCloud, Box, Bubble, Heart, Paper, Pelmen, Room, Screw, Wardrobe } from "./parts/Props";
+import { AssemblyCloud, Box, Bubble, Doorway, Heart, Paper, Pelmen, Room, Screw, Wardrobe } from "./parts/Props";
+import { Varya } from "./parts/Varya";
 import { Captions } from "./parts/Captions";
 
 // ATELIER — «Без лифта» · 01 «Инструкция». Hand-authored; no stock components.
@@ -14,6 +15,7 @@ export interface SceneProps {
   lines: Line[];
   sfx: { src: string; at: number; vol: number }[];
   beats: Record<string, [number, number]>;
+  shift_b6_b7?: number;  // beats 6–7 were pulled earlier by this many seconds; their choreography is authored in pre-shift time
 }
 
 const Camera: React.FC<{ s: number; cx: number; cy: number; dx?: number; dy?: number; children: React.ReactNode }> = ({ s, cx, cy, dx = 0, dy = 0, children }) => (
@@ -126,9 +128,146 @@ const Beat3: React.FC<{ t: number; f: number; lines: Line[] }> = ({ t, f, lines 
   );
 };
 
-export const Scene: React.FC<SceneProps> = ({ lines, sfx, beats }) => {
+// ------------------------------------------------ beat 4: дед в шкафу
+const Beat4: React.FC<{ t: number; f: number; lines: Line[] }> = ({ t, f, lines }) => {
+  const open = 1 - ramp(t, 14.8, 14.9, Easing.in(Easing.quad));
+  const [wsx, wsy] = landing(t, 14.88, 0.06);
+  const genaTalkIn = isTalking(lines, "gena", t) && t > 15.6;
+  const hopY = Math.abs(wobble(t, 15.25, 16, 4, 7)) + Math.abs(wobble(t, 15.55, 14, 4, 7)) + (genaTalkIn ? Math.abs(Math.sin(t * 23)) * 5 : 0);
+  const walk = ramp(t, 13.3, 14.55);
+  const gx = mix(1180, 270, walk);
+  const walking = t > 13.3 && t < 14.55;
+  const genaHop = walking ? Math.abs(Math.sin(t * 16)) * 12 : 0;
+  const genaInside = gx < 470;
+  const freeze = t >= 18.6 && t < 19.75;
+  const take = t >= 19.9;
+  const shakeK = Math.exp(-6 * Math.max(0, t - 18.6)) * (t >= 18.6 ? 1 : 0);
+  const shake = Math.sin(t * 60) * 6 * shakeK;
+  const talk = isTalking(lines, "tolik", t) && !freeze;
+  const invite = ramp(t, 13.1, 13.3) * (1 - ramp(t, 14.3, 14.5));
+  const push = ramp(t, 14.62, 14.8) * (1 - ramp(t, 15.0, 15.3));
+  const whip = t >= 19.75 && t < 19.9;
+  const [tsx, tsy] = landing(t, 19.92, 0.12);
+  const gena = (inside: boolean) => (
+    <Gena x={inside ? Math.max(160, gx - 110) : gx} y={inside ? -20 : 1490} s={1.0} hop={genaHop}
+      lookX={0.6} open={blink(t, [13.2])} mood="grin" v={visemeAt(lines, "gena", t)} jitter={t * 25}
+      browY={wobble(t, 13.4, 12, 4) + Math.sin(t * 6) * 3} />
+  );
+  return (
+    <Camera s={0.97} cx={540} cy={1250} dy={shake} dx={shake * 0.4}>
+      <Room t={t} />
+      <Wardrobe x={110} y={1470} lean={3 + (genaTalkIn ? Math.sin(t * 19) * 0.8 : 0)} door={9 + wobble(t, 14.88, 6, 3, 4)} open={open} hopY={hopY} sx={wsx} sy={wsy}
+        inside={genaInside ? gena(true) : null} />
+      <Tolik x={790} y={1480} s={1.1} sx={tsx} sy={tsy * (freeze ? 1 : 1 + 0.012 * Math.sin(t * 3.4))}
+        lean={-8 + 20 * push + (talk ? Math.sin(t * 7) * 1.5 : 0)}
+        headTilt={freeze ? 0 : whip ? -12 : (talk ? Math.sin(t * 12) * 2 : 0)}
+        tuft={freeze ? 0 : wobble(t, 14.85, 14) + wobble(t, 19.92, 22)}
+        armL={push > 0 ? mixP(HIPS_L, { x: -300, y: -440, bulge: 20 }, push) : mixP(HIPS_L, { x: -210, y: -500, bulge: 30 }, invite)}
+        armR={HIPS_R}
+        lookX={whip ? -1 : take ? 0 : mix(-0.5, 0.1, ramp(t, 15.2, 15.5))} lookY={0}
+        lid={take ? 0 : t > 17.9 ? 0.05 : 0.25} open={freeze ? 1 : blink(t, [16.4])}
+        brow={take ? "up" : t > 18.2 ? "worried" : "smug"} mood={take ? "shock" : t > 18.2 ? "neutral" : "smug"}
+        v={visemeAt(lines, "tolik", t)} jitter={t * 30} />
+      {!genaInside && gena(false)}
+      <Bubble x={300} y={760} text="ХЛОП" k={springAt(f, 14.85, 8, 220) * (1 - ramp(t, 15.2, 15.35))} rot={-8} />
+      <Bubble x={330} y={720} text="БОНК" k={springAt(f, 15.3, 8, 220) * (1 - ramp(t, 15.9, 16.05))} rot={8} fill="#FFFFFF" />
+      <Bubble x={300} y={1600} text="ТУК-ТУК" k={springAt(f, 18.6, 8, 220) * (1 - ramp(t, 19.4, 19.55))} rot={4} fill="#FFFFFF" />
+    </Camera>
+  );
+};
+
+// ------------------------------------------------ beat 5: Варя + реакция
+const Beat5: React.FC<{ t: number; f: number; lines: Line[] }> = ({ t, f, lines }) => {
+  if (t < 26.2) {
+    const open = ramp(t, 20.4, 20.68, Easing.out(Easing.back(1.4)));
+    const sip = ramp(t, 20.7, 20.88) * (1 - ramp(t, 21.15, 21.35));
+    const glasses = ramp(t, 23.0, 23.15) * (1 - ramp(t, 23.3, 23.45));
+    const paper = springAt(f, 24.45, 10);
+    return (
+      <Camera s={mix(mix(1, 1.05, ramp(t, 20.4, 24.4)), 0.78, paper)} cx={540} cy={1100}>
+        <Doorway open={open}>
+          <Varya x={540} y={1960} s={3.0} sip={sip} glasses={glasses} paper={paper}
+            lid={0.45} open={blink(t, [22.15, 25.5])} reflect
+            bun={wobble(t, 20.45, 8, 2.5) + wobble(t, 20.75, 6, 2.5)} mood="neutral" v={visemeAt(lines, "varya", t)} />
+        </Doorway>
+      </Camera>
+    );
+  }
+  const [sx, sy] = landing(t, 26.22, 0.12);
+  const droop = ramp(t, 26.6, 27.0, Easing.out(Easing.bounce));
+  return (
+    <Camera s={1.8} cx={540} cy={780}>
+      <Room t={t} />
+      <Tolik x={540} y={1480} s={1.1} sx={sx} sy={sy} lean={-2} headTilt={Math.sin(t * 30) * 1.2}
+        tuft={70 * droop + wobble(t, 26.22, 10)} armL={HIPS_L} armR={HIPS_R}
+        lookX={0} lid={0} open={1} brow="up" mood="shock" v={visemeAt(lines, "tolik", t)} jitter={t * 30} />
+    </Camera>
+  );
+};
+
+// ------------------------------------------- beat 6: лайк из шкафа + кот
+const Beat6: React.FC<{ t: number; f: number; lines: Line[] }> = ({ t, f, lines }) => {
+  if (t < 30.9) {
+    const pop = springAt(f, 28.42, 7, 180);
+    const laugh = t > 28.6 && t < 29.25;
+    return (
+      <Camera s={1.0} cx={540} cy={1200}>
+        <Room t={t} />
+        <Wardrobe x={110} y={1470} lean={3} door={9} lidOff={ramp(t, 28.38, 28.95, Easing.out(Easing.quad))}
+          hopY={Math.abs(wobble(t, 28.4, 10, 4, 7))}
+          inside={
+            <Gena x={160} y={mix(-20, -430, pop)} s={1.0} thumb={springAt(f, 29.3, 8)}
+              shake={laugh ? Math.sin(t * 70) * 5 : 0} browY={wobble(t, 28.45, 26, 3) + wobble(t, 29.35, 14, 3)}
+              lookX={0} open={blink(t, [30.5])} mood="grin" v={visemeAt(lines, "gena", t)} jitter={t * 25} />
+          } />
+        <Tolik x={800} y={1480} s={1.1} lean={-2} tuft={70 + wobble(t, 28.4, 8)} armL={HIPS_L} armR={HIPS_R}
+          lookX={-0.9} lookY={-0.3} lid={0} open={blink(t, [29.9])} brow="up" mood="shock" v="rest" />
+        <Bubble x={420} y={700} text="ПОФ!" k={springAt(f, 28.38, 8, 220) * (1 - ramp(t, 28.9, 29.05))} rot={10} />
+        <Heart x={150} y={760} k={springAt(f, 30.04, 8, 200) * (1 - ramp(t, 30.7, 30.88))} />
+      </Camera>
+    );
+  }
+  return (
+    <Camera s={mix(1, 1.06, ramp(t, 30.9, 32.2))} cx={540} cy={1380}>
+      <Room t={t} />
+      <Pelmen x={540} y={1760} s={5} lookX={0} lookY={0} lid={0.62} open={blink(t, [31.55])} tail={wobble(t, 31.0, 18, 1.5, 2)} />
+    </Camera>
+  );
+};
+
+// --------------------------------------------- beat 7: петля к кадру 1
+const Beat7: React.FC<{ t: number; f: number; lines: Line[] }> = ({ t, lines }) => {
+  const slide = ramp(t, 32.2, 32.55, Easing.out(Easing.back(1.6)));
+  const [, bsy] = landing(t, 32.55, 0.1);
+  const reach = ramp(t, 33.42, 33.66);
+  const throwK = ramp(t, 33.7, 33.83, Easing.out(Easing.quad));
+  const armR = throwK > 0 ? mixP({ x: -170, y: -380, bulge: -40 }, THROW_R, throwK) : mixP(HIPS_R, { x: -170, y: -380, bulge: -40 }, reach);
+  const armL = mixP(HIPS_L, { x: -120, y: -440, bulge: 30 }, ramp(t, 33.4, 33.7));
+  const lean = throwK > 0 ? mix(12, 8, throwK) : mix(-8, 12, reach);
+  const paperK = ramp(t, 33.7, 33.83);
+  const talk = isTalking(lines, "tolik", t);
+  return (
+    <Camera s={1} cx={540} cy={1150}>
+      <Room t={t} />
+      <g transform={`translate(${mix(-420, 40, slide)},1480) scale(1,${bsy}) translate(0,-1480)`}>
+        <Box x={0} y={1480} flap={1} />
+      </g>
+      <Pelmen x={880} y={1480} s={1.5} lookX={0} lookY={mix(0, -0.9, ramp(t, 33.5, 33.83))} lid={mix(0.6, 0.1, ramp(t, 33.5, 33.83))} open={1} tail={0} />
+      {paperK > 0 && <Paper x={mix(250, 654, paperK)} y={mix(1000, 741, paperK)} r={0} s={1.1} />}
+      <Tolik x={520} y={1480} s={1.12} lean={lean}
+        headTilt={talk ? Math.sin(t * 13) * 2.5 : 0}
+        tuft={wobble(t, 32.6, 10) * (1 - ramp(t, 33.6, 33.83))}
+        armR={armR} armL={armL} lookX={0.2} lid={0.25} open={1} brow="smug" mood="smug"
+        v={visemeAt(lines, "tolik", t)} jitter={t * 30} />
+    </Camera>
+  );
+};
+
+export const Scene: React.FC<SceneProps> = ({ lines, sfx, beats, shift_b6_b7 = 0 }) => {
   const f = useCurrentFrame();
   const t = f / FPS;
+  const D = shift_b6_b7;
+  const shifted = React.useMemo(() => lines.map((l) => ({ ...l, words: l.words.map((w) => ({ ...w, t0: w.t0 + D, t1: w.t1 + D })), chars: l.chars.map((c) => ({ ...c, t0: c.t0 + D, t1: c.t1 + D })) })), [lines, D]);
   const inBeat = (k: string) => t >= beats[k][0] && t < beats[k][1];
   return (
     <AbsoluteFill style={{ background: "#EFE3CF" }}>
@@ -136,6 +275,10 @@ export const Scene: React.FC<SceneProps> = ({ lines, sfx, beats }) => {
         {inBeat("b1") && <Beat1 t={t} f={f} lines={lines} />}
         {inBeat("b2") && <Beat2 t={t} f={f} lines={lines} />}
         {inBeat("b3") && <Beat3 t={t} f={f} lines={lines} />}
+        {inBeat("b4") && <Beat4 t={t} f={f} lines={lines} />}
+        {inBeat("b5") && <Beat5 t={t} f={f} lines={lines} />}
+        {inBeat("b6") && <Beat6 t={t + D} f={f + Math.round(D * FPS)} lines={shifted} />}
+        {inBeat("b7") && <Beat7 t={t + D} f={f + Math.round(D * FPS)} lines={shifted} />}
       </svg>
       <Captions lines={lines} t={t} frame={f} />
       {lines.map((l) => (

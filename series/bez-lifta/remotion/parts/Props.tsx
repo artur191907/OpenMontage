@@ -111,20 +111,37 @@ export const AssemblyCloud: React.FC<{ x: number; y: number; t: number; k: numbe
 };
 
 /** Кривой шкаф. lean — наклон в градусах вокруг правого нижнего угла. */
-export const Wardrobe: React.FC<{ x: number; y: number; lean: number; door: number }> = ({ x, y, lean, door }) => (
-  <g transform={`translate(${x},${y}) rotate(${lean} 320 0)`}>
-    <g transform="skewX(-7)">
-      <rect x={0} y={-600} width={320} height={600} rx={6} fill="#B07D4F" {...st} />
-      <rect x={18} y={-580} width={136} height={560} fill="#C79363" {...st} />
-      <g transform={`rotate(${door} 302 -580)`}>
-        <rect x={166} y={-560} width={136} height={560} fill="#C79363" {...st} />
-        <circle cx={182} cy={-280} r={9} fill={INK} />
+export const Wardrobe: React.FC<{
+  x: number; y: number; lean: number; door: number;
+  open?: number;      // 0 closed … 1 both doors swung open (seen edge-on at the hinges)
+  lidOff?: number;    // 0 … 1 top board flying away
+  hopY?: number; sx?: number; sy?: number;
+  inside?: React.ReactNode;  // drawn inside the carcass, behind the doors (things can stick out of the top)
+}> = ({ x, y, lean, door, open = 0, lidOff = 0, hopY = 0, sx = 1, sy = 1, inside }) => {
+  const wl = 136 * (1 - 0.8 * open);
+  return (
+    <g transform={`translate(${x},${y - hopY}) rotate(${lean} 320 0) translate(160,0) scale(${sx},${sy}) translate(-160,0)`}>
+      <g transform="skewX(-7)">
+        <rect x={0} y={-600} width={320} height={600} rx={6} fill="#B07D4F" {...st} />
+        <rect x={18} y={-580} width={284} height={560} fill="#4A2F1C" />
       </g>
-      <circle cx={140} cy={-290} r={9} fill={INK} />
-      <path d="M40,-610 l90,-40 M200,-604 l60,30" stroke={INK} strokeWidth={6} strokeLinecap="round" opacity={0.6} />
+      {inside}
+      <g transform="skewX(-7)">
+        <path d="M0,-600 H320 V0 H0 Z M18,-580 V-20 H302 V-580 Z" fill="#B07D4F" fillRule="evenodd" {...st} />
+        <rect x={18} y={-580} width={wl} height={560} fill="#C79363" {...st} />
+        <g transform={`rotate(${door * (1 - open)} 302 -580)`}>
+          <rect x={302 - wl} y={-560} width={wl} height={560} fill="#C79363" {...st} />
+          {open < 0.5 && <circle cx={302 - wl + 16} cy={-280} r={9} fill={INK} />}
+        </g>
+        {open < 0.5 && <circle cx={18 + wl - 14} cy={-290} r={9} fill={INK} />}
+        <g transform={`translate(0,${-420 * lidOff}) rotate(${-50 * lidOff} 160 -610)`} opacity={1 - Math.max(0, lidOff - 0.8) * 5}>
+          <rect x={-6} y={-624} width={332} height={26} rx={6} fill="#9C6B41" {...st} />
+        </g>
+        {lidOff === 0 && <path d="M40,-630 l90,-40 M200,-624 l60,30" stroke={INK} strokeWidth={6} strokeLinecap="round" opacity={0.6} />}
+      </g>
     </g>
-  </g>
-);
+  );
+};
 
 export const Screw: React.FC<{ x: number; y: number; r: number }> = ({ x, y, r }) => (
   <g transform={`translate(${x},${y}) rotate(${r})`}>
@@ -151,3 +168,32 @@ export const Heart: React.FC<{ x: number; y: number; k: number }> = ({ x, y, k }
       <text x={70} y={-6} fontSize={54} fontWeight={900} fontFamily="RubikLocal" fill="#E54848" stroke={INK} strokeWidth={10} paintOrder="stroke">+1</text>
     </g>
   );
+
+/** Входная дверь квартиры изнутри: проём, за ним лестничная клетка (зелёная краска, побелка, табличка «5 этаж»). */
+export const Doorway: React.FC<{ open: number; children?: React.ReactNode }> = ({ open, children }) => (
+  <g>
+    <rect width={1080} height={1920} fill="#EFE3CF" />
+    {/* проём */}
+    <g>
+      <rect x={150} y={330} width={780} height={1700} fill="#E8E4D8" />
+      <rect x={150} y={1000} width={780} height={1100} fill="#8FB09A" />
+      <path d="M150,1000 H930" stroke="#6E9580" strokeWidth={10} />
+      <g transform="translate(700,640)">
+        <rect width={150} height={70} rx={8} fill="#F4F4F0" stroke={INK} strokeWidth={5} />
+        <text x={75} y={47} textAnchor="middle" fontSize={34} fontWeight={900} fontFamily="RubikLocal" fill={INK}>5 ЭТАЖ</text>
+      </g>
+      <g transform="translate(200,1080)" opacity={0.85}>
+        {[0, 1, 2].map((i) => <rect key={i} x={i * 70} width={62} height={90} rx={4} fill="#7C8A94" stroke={INK} strokeWidth={4} />)}
+      </g>
+    </g>
+    {children}
+    {/* дверная коробка */}
+    <path d="M110,2000 V290 H970 V2000 H930 V330 H150 V2000 Z" fill="#8A5A3A" stroke={INK} strokeWidth={8} strokeLinejoin="round" />
+    {/* полотно двери, распахивается к зрителю (сужается к петлям справа) */}
+    <g transform={`translate(930,0) scale(${1 - 0.86 * open},1) translate(-930,0)`}>
+      <rect x={150} y={330} width={780} height={1700} fill="#A0704C" stroke={INK} strokeWidth={8} />
+      <rect x={230} y={430} width={620} height={560} rx={10} fill="none" stroke="#7A5236" strokeWidth={12} />
+      <circle cx={230} cy={1180} r={24} fill="#D9B44A" stroke={INK} strokeWidth={6} />
+    </g>
+  </g>
+);

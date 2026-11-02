@@ -4,7 +4,7 @@ import { FPS, INK, Line } from "./anim";
 
 // Rubik 900 shipped locally in public/fonts (headless Chrome can't reach Google Fonts from this sandbox).
 const fontFamily = "RubikLocal";
-const fontHandle = delayRender("Loading Rubik 900");
+const fontHandle = delayRender("Loading Rubik 900", { timeoutInMilliseconds: 180000 });
 Promise.all(
   [
     ["fonts/rubik-900-cyrillic.woff2", "U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116"],
