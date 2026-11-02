@@ -1,0 +1,38 @@
+{
+  "paper_slap": {
+    "prompt": "Cartoon crumpled paper ball landing softly on a cat's head, light papery slap thud, comedic, dry",
+    "duration": 0.6,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "ratchet": {
+    "prompt": "Fast cartoon screwdriver ratchet spinning, rapid clicking zip, comedic speed-up, dry",
+    "duration": 1.2,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "like_ding": {
+    "prompt": "Bright cheerful social media notification pop ding, short, cartoon",
+    "duration": 0.6,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "screws": {
+    "prompt": "Handful of small metal screws dropping and jingling on a wooden floor, short",
+    "duration": 1.0,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "creak": {
+    "prompt": "Slow wooden wardrobe creaking and leaning, comedic wood groan, short",
+    "duration": 1.4,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  },
+  "whoosh": {
+    "prompt": "Short fast cartoon whoosh swish, a crumpled paper ball thrown over the shoulder, dry, no music",
+    "duration": 0.8,
+    "provider": "elevenlabs",
+    "model": "eleven_text_to_sound_v2"
+  }
+}

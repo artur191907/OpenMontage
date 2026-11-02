@@ -216,7 +216,7 @@
       "tts_provider": "elevenlabs",
       "tts_model": "eleven_v3",
       "tts_model_reason": "Лучшая эмоциональность на русском, поддерживает аудио-теги [laughs], [sighs], [shouts], [whispers].",
-      "status": "BLOCKED на free-тарифе (2026-11-02): библиотечные голоса через API → 402 paid_plan_required; Voice Design через API → 403 feature_not_available. Доступны только 21 стандартный голос. Решение — за пользователем: Starter или стандартные голоса.",
+      "status": "FINAL (2026-11-02): стандартные голоса ElevenLabs — утверждено пользователем после пробных фраз. Библиотечные голоса и Voice Design недоступны на free-тарифе через API; кандидаты оставлены как вариант для платного тарифа.",
       "tolik": {
         "timbre": "Тенор, ярче и выше среднего, в панике срывается в фальцет",
         "tempo": "Быстрый",
@@ -233,6 +233,11 @@
           "stability": 0.3,
           "similarity_boost": 0.75,
           "style": 0.6
+        },
+        "final": {
+          "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+          "name": "Liam (premade)",
+          "sample": "casting/tolik_premade_liam.mp3"
         }
       },
       "varya": {
@@ -251,6 +256,11 @@
           "stability": 0.6,
           "similarity_boost": 0.8,
           "style": 0.2
+        },
+        "final": {
+          "voice_id": "EXAVITQu4vr4xnSDxMaL",
+          "name": "Sarah (premade)",
+          "sample": "casting/varya_premade_sarah.mp3"
         }
       },
       "gena": {
@@ -270,6 +280,11 @@
           "stability": 0.35,
           "similarity_boost": 0.75,
           "style": 0.5
+        },
+        "final": {
+          "voice_id": "pqHfZKP75CvOlQylNhV4",
+          "name": "Bill (premade)",
+          "sample": "casting/gena_premade_bill.mp3"
         }
       },
       "free_tier_fallback": {
