@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Без лифта — лист персонажей</title>
+<style>
+  html,body{margin:0;background:#F4E9D8;font-family:"DejaVu Sans",Arial,sans-serif}
+  svg{display:block}
+  .ink{stroke:#1E1A1A;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}
+  .sil{filter:brightness(0)}
+  text{fill:#1E1A1A}
+</style></head><body>
+<svg id="sheet" width="1800" height="1180" viewBox="0 0 1800 1180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- ТОЛИК: «восклицательный знак», ноги в точке (0,0) -->
+    <g id="tolik">
+      <ellipse cx="0" cy="0" rx="120" ry="14" fill="#1E1A1A" opacity=".15" class="noSil"/>
+      <!-- ноги -->
+      <path d="M-22,-40 C-26,-120 -30,-200 -28,-280" fill="none" stroke="#1E1A1A" stroke-width="46" stroke-linecap="round"/>
+      <path d="M22,-40 C30,-120 32,-200 26,-280" fill="none" stroke="#1E1A1A" stroke-width="46" stroke-linecap="round"/>
+      <path d="M-22,-40 C-26,-120 -30,-200 -28,-280" fill="none" stroke="#2E5AAC" stroke-width="34" stroke-linecap="round"/>
+      <path d="M22,-40 C30,-120 32,-200 26,-280" fill="none" stroke="#2E5AAC" stroke-width="34" stroke-linecap="round"/>
+      <!-- кроссовки -->
+      <path class="ink" d="M-95,-6 C-95,-40 -60,-50 -20,-46 C-5,-44 -2,-20 -6,-4 Z" fill="#F7F7F2"/>
+      <path class="ink" d="M8,-4 C4,-24 8,-44 26,-46 C70,-50 100,-38 100,-6 Z" fill="#F7F7F2"/>
+      <!-- руки в боки (дальняя) -->
+      <path d="M58,-470 C140,-430 130,-360 62,-320" fill="none" stroke="#1E1A1A" stroke-width="36" stroke-linecap="round"/>
+      <path d="M58,-470 C140,-430 130,-360 62,-320" fill="none" stroke="#FF7A1A" stroke-width="24" stroke-linecap="round"/>
+      <!-- худи -->
+      <path class="ink" d="M-62,-500 C-70,-420 -66,-330 -58,-280 L58,-280 C66,-330 70,-420 62,-500 C30,-516 -30,-516 -62,-500 Z" fill="#FF7A1A"/>
+      <path class="ink" d="M-34,-350 L34,-350 L28,-300 L-28,-300 Z" fill="#E86A10"/>
+      <path d="M-14,-500 L-12,-440 M14,-500 L12,-440" class="ink" fill="none" stroke-width="4"/>
+      <!-- рука в боки (ближняя) -->
+      <path d="M-58,-470 C-140,-430 -132,-360 -62,-320" fill="none" stroke="#1E1A1A" stroke-width="36" stroke-linecap="round"/>
+      <path d="M-58,-470 C-140,-430 -132,-360 -62,-320" fill="none" stroke="#FF7A1A" stroke-width="24" stroke-linecap="round"/>
+      <circle class="ink" cx="-62" cy="-318" r="16" fill="#F2C29B"/>
+      <circle class="ink" cx="62" cy="-318" r="16" fill="#F2C29B"/>
+      <!-- шея -->
+      <rect class="ink" x="-14" y="-560" width="28" height="64" fill="#F2C29B"/>
+      <!-- голова-капля + подбородок-кирпич -->
+      <path class="ink" d="M0,-735 C40,-720 62,-670 64,-610 L68,-560 C68,-540 56,-530 40,-530 L-40,-530 C-56,-530 -68,-540 -68,-560 L-64,-610 C-62,-670 -40,-720 0,-735 Z" fill="#F2C29B"/>
+      <!-- хохолок -->
+      <path class="ink" d="M-14,-728 C-30,-770 -6,-800 4,-840 C14,-800 34,-772 16,-728 Z" fill="#C8501E"/>
+      <!-- лицо -->
+      <g class="eye">
+        <ellipse cx="-22" cy="-650" rx="14" ry="18" fill="#fff" class="ink" stroke-width="4"/>
+        <ellipse cx="24" cy="-650" rx="14" ry="18" fill="#fff" class="ink" stroke-width="4"/>
+        <circle cx="-18" cy="-646" r="6" fill="#1E1A1A"/><circle cx="28" cy="-646" r="6" fill="#1E1A1A"/>
+        <path d="M-38,-680 L-8,-674 M10,-674 L40,-684" class="ink" fill="none" stroke-width="5"/>
+        <path d="M-30,-578 C-8,-560 22,-562 40,-588" class="ink" fill="none" stroke-width="5"/>
+      </g>
+    </g>
+
+    <!-- ВАРЯ: «ноль / восьмёрка» -->
+    <g id="varya">
+      <ellipse cx="0" cy="0" rx="95" ry="12" fill="#1E1A1A" opacity=".15" class="noSil"/>
+      <path d="M-34,-40 L-34,-8 L-6,-8 M34,-40 L34,-8 L6,-8" fill="none" stroke="#1E1A1A" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M-34,-40 L-34,-8 L-6,-8 M34,-40 L34,-8 L6,-8" fill="none" stroke="#1F5E4A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- тело-круг -->
+      <circle class="ink" cx="0" cy="-105" r="78" fill="#E3B23C"/>
+      <path class="ink" d="M-62,-58 C-30,-36 30,-36 62,-58 C56,-40 30,-26 0,-26 C-30,-26 -56,-40 -62,-58 Z" fill="#1F5E4A"/>
+      <!-- кружка -->
+      <path class="ink" d="M56,-128 L104,-128 L100,-74 L60,-74 Z" fill="#FFFFFF"/>
+      <path d="M58,-110 L102,-110" stroke="#C8323C" stroke-width="8"/>
+      <path class="ink" d="M104,-118 C124,-118 124,-88 102,-88" fill="none" stroke-width="6"/>
+      <circle class="ink" cx="64" cy="-100" r="15" fill="#E9B48E"/>
+      <!-- голова -->
+      <circle class="ink" cx="0" cy="-232" r="58" fill="#E9B48E"/>
+      <path class="ink" d="M-58,-240 C-56,-292 56,-296 58,-240 C40,-270 -40,-270 -58,-240 Z" fill="#5A3825"/>
+      <!-- пучок -->
+      <circle class="ink" cx="0" cy="-322" r="44" fill="#5A3825"/>
+      <!-- очки-блюдца -->
+      <g class="eye">
+        <circle cx="-23" cy="-226" r="21" fill="#fff" class="ink" stroke-width="5"/>
+        <circle cx="25" cy="-226" r="21" fill="#fff" class="ink" stroke-width="5"/>
+        <path d="M-36,-224 L-10,-224 M12,-224 L38,-224" stroke="#1E1A1A" stroke-width="5" stroke-linecap="round"/>
+        <path d="M-14,-190 L12,-192" class="ink" stroke-width="5"/>
+      </g>
+    </g>
+
+    <!-- ДЕД ГЕНА: «кирпич» -->
+    <g id="gena">
+      <ellipse cx="0" cy="0" rx="130" ry="14" fill="#1E1A1A" opacity=".15" class="noSil"/>
+      <!-- трость -->
+      <path d="M120,-2 L104,-210 C102,-240 140,-244 140,-216" fill="none" stroke="#1E1A1A" stroke-width="16" stroke-linecap="round"/>
+      <path d="M120,-2 L104,-210 C102,-240 140,-244 140,-216" fill="none" stroke="#8A5A2B" stroke-width="8" stroke-linecap="round"/>
+      <!-- ножки-спички -->
+      <path d="M-30,-70 L-30,-24 M30,-70 L30,-24" stroke="#1E1A1A" stroke-width="16" stroke-linecap="round"/>
+      <path d="M-30,-70 L-30,-24 M30,-70 L30,-24" stroke="#D9C8A9" stroke-width="6" stroke-linecap="round"/>
+      <path class="ink" d="M-72,-4 C-72,-30 -6,-34 -6,-4 Z" fill="#8E1E27"/>
+      <path class="ink" d="M6,-4 C6,-34 72,-30 72,-4 Z" fill="#8E1E27"/>
+      <!-- корпус-кирпич: рубашка + жилет -->
+      <rect class="ink" x="-96" y="-250" width="192" height="186" rx="26" fill="#C8323C"/>
+      <path d="M-70,-248 L-70,-66 M-30,-250 L-30,-64 M30,-250 L30,-64 M70,-248 L70,-66 M-94,-200 L94,-200 M-94,-140 L94,-140" stroke="#8E1E27" stroke-width="8" class="noSil"/>
+      <path class="ink" d="M-96,-224 C-96,-246 -80,-250 -60,-250 L-20,-250 L-20,-64 L-70,-64 C-90,-64 -96,-80 -96,-96 Z" fill="#D9C8A9"/>
+      <path class="ink" d="M96,-224 C96,-246 80,-250 60,-250 L20,-250 L20,-64 L70,-64 C90,-64 96,-80 96,-96 Z" fill="#D9C8A9"/>
+      <!-- рука с тростью -->
+      <circle class="ink" cx="112" cy="-196" r="18" fill="#EFC3A4"/>
+      <!-- рука: палец вверх -->
+      <path d="M-90,-200 C-140,-230 -150,-270 -140,-310" fill="none" stroke="#1E1A1A" stroke-width="34" stroke-linecap="round"/>
+      <path d="M-90,-200 C-140,-230 -150,-270 -140,-310" fill="none" stroke="#C8323C" stroke-width="22" stroke-linecap="round"/>
+      <!-- кулак боком (пальцы поджаты горизонтально) + большой палец вверх -->
+      <path class="ink" d="M-150,-338 C-158,-370 -150,-394 -136,-394 C-124,-394 -122,-378 -126,-340 Z" fill="#EFC3A4"/>
+      <rect class="ink" x="-170" y="-342" width="58" height="48" rx="14" fill="#EFC3A4"/>
+      <path d="M-170,-326 L-140,-326 M-170,-310 L-140,-310" stroke="#1E1A1A" stroke-width="4" stroke-linecap="round" class="noSil"/>
+      <!-- голова -->
+      <rect class="ink" x="-78" y="-370" width="156" height="128" rx="40" fill="#EFC3A4"/>
+      <!-- кепка -->
+      <path class="ink" d="M-86,-352 C-86,-408 86,-414 90,-354 C60,-366 -60,-366 -86,-352 Z" fill="#6B6B6B"/>
+      <path class="ink" d="M40,-360 C80,-368 120,-360 124,-346 C100,-346 70,-350 40,-352 Z" fill="#555"/>
+      <!-- брови-щётки (выступают за контур) -->
+      <path class="ink" d="M-104,-318 C-90,-346 -40,-350 -10,-326 C-30,-318 -70,-310 -104,-318 Z" fill="#EDEDED"/>
+      <path class="ink" d="M104,-318 C90,-346 40,-350 10,-326 C30,-318 70,-310 104,-318 Z" fill="#EDEDED"/>
+      <g class="eye">
+        <circle cx="-30" cy="-302" r="7" fill="#1E1A1A"/><circle cx="30" cy="-302" r="7" fill="#1E1A1A"/>
+      </g>
+      <!-- нос + усы-подкова -->
+      <ellipse class="ink" cx="0" cy="-284" rx="20" ry="16" fill="#E39C86"/>
+      <path class="ink" d="M-6,-270 C-40,-276 -62,-262 -56,-226 C-46,-246 -30,-254 0,-254 C30,-254 46,-246 56,-226 C62,-262 40,-276 6,-270 Z" fill="#EDEDED"/>
+    </g>
+
+    <!-- КОТ ПЕЛЬМЕНЬ -->
+    <g id="pelmen">
+      <ellipse cx="0" cy="0" rx="70" ry="10" fill="#1E1A1A" opacity=".15" class="noSil"/>
+      <path class="ink" d="M50,-30 C100,-30 100,-90 74,-96 C90,-70 76,-50 50,-52" fill="#9AA0A6"/>
+      <path class="ink" d="M-48,-96 L-40,-150 L-12,-110 Z M48,-96 L40,-150 L12,-110 Z" fill="#9AA0A6"/>
+      <circle class="ink" cx="0" cy="-62" r="62" fill="#9AA0A6"/>
+      <g class="eye">
+        <path d="M-34,-74 L-10,-74 M10,-74 L34,-74" stroke="#1E1A1A" stroke-width="6" stroke-linecap="round"/>
+        <path d="M-32,-74 C-28,-66 -16,-66 -12,-74 Z M12,-74 C16,-66 28,-66 32,-74 Z" fill="#1E1A1A"/>
+        <path d="M-8,-48 L8,-48 L0,-40 Z" fill="#E39C86"/>
+      </g>
+    </g>
+  </defs>
+
+  <!-- Заголовок -->
+  <text x="60" y="76" font-size="46" font-weight="900">«Без лифта» — лист персонажей</text>
+  <text x="60" y="116" font-size="22" opacity=".7">Резиновый флэт · силуэты: восклицательный знак, ноль, кирпич, круг · черновик формы для ригов</text>
+
+  <!-- Цвет -->
+  <line x1="40" y1="960" x2="1400" y2="960" stroke="#1E1A1A" stroke-width="4" opacity=".25"/>
+  <g class="cast">
+    <use href="#tolik" x="260" y="960"/>
+    <use href="#varya" x="640" y="960"/>
+    <use href="#gena" x="1010" y="960"/>
+    <use href="#pelmen" x="1300" y="960"/>
+  </g>
+
+  <!-- Подписи -->
+  <g font-size="24" font-weight="900">
+    <text x="260" y="1010" text-anchor="middle">ТОЛИК, 34</text>
+    <text x="640" y="1010" text-anchor="middle">ВАРЯ, 31</text>
+    <text x="1010" y="1010" text-anchor="middle">ДЕД ГЕНА, 78</text>
+    <text x="1300" y="1010" text-anchor="middle">ПЕЛЬМЕНЬ</text>
+  </g>
+  <g font-size="19" opacity=".8">
+    <text x="260" y="1040" text-anchor="middle">«Спокойно. Я профессионал.»</text>
+    <text x="640" y="1040" text-anchor="middle">«Я даже не удивлена.»</text>
+    <text x="1010" y="1040" text-anchor="middle">«Ставлю лайк!»</text>
+    <text x="1300" y="1040" text-anchor="middle">(молча осуждает)</text>
+  </g>
+  <!-- палитры -->
+  <g>
+    <rect x="186" y="1062" width="36" height="36" fill="#FF7A1A" class="ink" stroke-width="3"/><rect x="226" y="1062" width="36" height="36" fill="#2E5AAC" class="ink" stroke-width="3"/><rect x="266" y="1062" width="36" height="36" fill="#F2C29B" class="ink" stroke-width="3"/><rect x="306" y="1062" width="36" height="36" fill="#C8501E" class="ink" stroke-width="3"/>
+    <rect x="566" y="1062" width="36" height="36" fill="#E3B23C" class="ink" stroke-width="3"/><rect x="606" y="1062" width="36" height="36" fill="#1F5E4A" class="ink" stroke-width="3"/><rect x="646" y="1062" width="36" height="36" fill="#5A3825" class="ink" stroke-width="3"/><rect x="686" y="1062" width="36" height="36" fill="#E9B48E" class="ink" stroke-width="3"/>
+    <rect x="936" y="1062" width="36" height="36" fill="#C8323C" class="ink" stroke-width="3"/><rect x="976" y="1062" width="36" height="36" fill="#D9C8A9" class="ink" stroke-width="3"/><rect x="1016" y="1062" width="36" height="36" fill="#6B6B6B" class="ink" stroke-width="3"/><rect x="1056" y="1062" width="36" height="36" fill="#EDEDED" class="ink" stroke-width="3"/>
+    <rect x="1282" y="1062" width="36" height="36" fill="#9AA0A6" class="ink" stroke-width="3"/>
+  </g>
+
+  <!-- Силуэты (тест «узнаваем в чёрно-белом») -->
+  <rect x="1440" y="150" width="330" height="950" rx="24" fill="#FFFFFF" opacity=".55"/>
+  <text x="1605" y="196" font-size="22" font-weight="900" text-anchor="middle">ТЕСТ СИЛУЭТОВ</text>
+  <g class="sil" transform="translate(1455,230) scale(.42)">
+    <g class="cast">
+      <use href="#tolik" x="150" y="900"/>
+      <use href="#varya" x="520" y="900"/>
+      <use href="#gena" x="300" y="1950"/>
+      <use href="#pelmen" x="580" y="1950"/>
+    </g>
+  </g>
+</svg>
+</body></html>
