@@ -10,7 +10,7 @@ metadata: {"openclaw": {"requires": {"env": ["ELEVENLABS_API_KEY"]}, "primaryEnv
 
 Transcribe audio to text with Scribe v2 - supports 90+ languages, speaker diarization, and word-level timestamps.
 
-> **Setup:** See [Installation Guide](references/installation.md). For JavaScript, use `@elevenlabs/*` packages only.
+> **Setup, before writing any code:** if `ELEVENLABS_API_KEY` isn't set for this project, run `npx -y @elevenlabs/cli@latest onboard init` from the app's folder first and follow what it prints: it signs the user in and stores a key for the project, so nobody copies one by hand. Otherwise see the [Installation Guide](references/installation.md). For JavaScript, use `@elevenlabs/*` packages only.
 
 ## Quick Start
 
@@ -41,11 +41,10 @@ const result = await client.speechToText.convert({
 console.log(result.text);
 ```
 
-### cURL
+### CLI
 
 ```bash
-curl -X POST "https://api.elevenlabs.io/v1/speech-to-text" \
-  -H "xi-api-key: $ELEVENLABS_API_KEY" -F "file=@audio.mp3" -F "model_id=scribe_v2"
+elevenlabs speech-to-text convert --file audio.mp3 --model-id scribe_v2
 ```
 
 ## Models
@@ -53,7 +52,10 @@ curl -X POST "https://api.elevenlabs.io/v1/speech-to-text" \
 | Model ID | Description | Best For |
 |----------|-------------|----------|
 | `scribe_v2` | State-of-the-art accuracy, 90+ languages | Batch transcription, subtitles, long-form audio |
+| `scribe_v2_medical` | Specialized recognition for medical and clinical audio, 90+ languages | Clinical documentation, medical dictation, patient calls |
 | `scribe_v2_realtime` | Low latency (~150ms) | Live transcription, voice agents |
+| `scribe_v2_realtime_turbo` | Realtime transcription variant | Live transcription |
+| `scribe_v2_realtime_lite` | Realtime transcription variant | Live transcription |
 
 ## Transcription with Timestamps
 
@@ -82,6 +84,32 @@ result = client.speech_to_text.convert(
 
 for word in result.words:
     print(f"[{word.speaker_id}] {word.text}")
+```
+
+For call recordings, the batch API can label diarized speakers as `agent` and `customer` by setting `detect_speaker_roles=true` alongside `diarize=true`. This option is not compatible with `use_multi_channel=true`.
+
+If your workspace has registered speaker profiles, set `use_speaker_library=true` with `diarize=true` to match detected speakers against the speaker library.
+
+```bash
+elevenlabs speech-to-text convert \
+  --file call.mp3 \
+  --model-id scribe_v2 \
+  --diarize true \
+  --detect-speaker-roles true \
+  --use-speaker-library true
+```
+
+## Multichannel Audio
+
+Use `use_multi_channel=true` when each speaker is isolated on a separate audio channel. By default, the API returns one transcript per channel under `transcripts`; set `multichannel_output_style="combined"` to receive one transcript merged by timestamp, with `channel_index` on each word.
+
+```python
+result = client.speech_to_text.convert(
+    file=audio_file,
+    model_id="scribe_v2",
+    use_multi_channel=True,
+    multichannel_output_style="combined",
+)
 ```
 
 ## Keyterm Prompting
@@ -115,7 +143,7 @@ print(f"Detected: {result.language_code} ({result.language_probability:.0%})")
 **Audio:** MP3, WAV, M4A, FLAC, OGG, WebM, AAC, AIFF, Opus
 **Video:** MP4, AVI, MKV, MOV, WMV, FLV, WebM, MPEG, 3GPP
 
-**Limits:** Up to 3GB file size, 10 hours duration
+**Limits:** Up to 5.0GB file size, 10 hours duration
 
 ## Response Format
 
@@ -155,8 +183,8 @@ Common errors:
 Monitor usage via `request-id` response header:
 
 ```python
-response = client.speech_to_text.convert.with_raw_response(file=audio_file, model_id="scribe_v2")
-result = response.parse()
+response = client.speech_to_text.with_raw_response.convert(file=audio_file, model_id="scribe_v2")
+result = response.data
 print(f"Request ID: {response.headers.get('request-id')}")
 ```
 
@@ -173,22 +201,34 @@ A "commit" tells the model to finalize the current segment. You can commit manua
 
 ```python
 import asyncio
-from elevenlabs import ElevenLabs
+from elevenlabs import CommitStrategy, ElevenLabs, RealtimeEvents, RealtimeUrlOptions
 
 client = ElevenLabs()
 
 async def transcribe_realtime():
-    async with client.speech_to_text.realtime.connect(
+    done = asyncio.Event()
+    connection = await client.speech_to_text.realtime.connect(RealtimeUrlOptions(
         model_id="scribe_v2_realtime",
+        url="https://npr-ice.streamguys1.com/live.mp3",
+        commit_strategy=CommitStrategy.VAD,  # URL streams never commit on their own
         include_timestamps=True,
-    ) as connection:
-        await connection.stream_url("https://example.com/audio.mp3")
+        keyterms=["ElevenLabs", "Scribe"],
+        no_verbatim=True,
+    ))
 
-        async for event in connection:
-            if event.type == "partial_transcript":
-                print(f"Partial: {event.text}")
-            elif event.type == "committed_transcript":
-                print(f"Final: {event.text}")
+    def on_error(error):
+        print(f"Error: {error}")
+        done.set()
+
+    connection.on(RealtimeEvents.PARTIAL_TRANSCRIPT, lambda data: print(f"Partial: {data.get('text', '')}"))
+    connection.on(RealtimeEvents.COMMITTED_TRANSCRIPT, lambda data: print(f"Final: {data.get('text', '')}"))
+    connection.on(RealtimeEvents.ERROR, on_error)
+    connection.on(RealtimeEvents.CLOSE, done.set)
+
+    try:
+        await done.wait()
+    finally:
+        await connection.close()
 
 asyncio.run(transcribe_realtime())
 ```
@@ -204,6 +244,9 @@ function TranscriptionComponent() {
   const scribe = useScribe({
     modelId: "scribe_v2_realtime",
     commitStrategy: CommitStrategy.VAD, // Auto-commit on silence for mic input
+    keyterms: ["ElevenLabs", "Scribe"],
+    noVerbatim: true,
+    includeLanguageDetection: true,
     onPartialTranscript: (data) => console.log("Partial:", data.text),
     onCommittedTranscript: (data) => setTranscript((prev) => prev + data.text),
   });
@@ -229,6 +272,9 @@ function TranscriptionComponent() {
 | **Manual** | You call `commit()` when ready - use for file processing or when you control the audio segments |
 | **VAD** | Voice Activity Detection auto-commits when silence is detected - use for live microphone input |
 
+Set `includeLanguageDetection: true` to receive the detected language code in delayed final
+transcript events.
+
 ```typescript
 // React: set commitStrategy on the hook (recommended for mic input)
 import { useScribe, CommitStrategy } from "@elevenlabs/react";
@@ -236,6 +282,8 @@ import { useScribe, CommitStrategy } from "@elevenlabs/react";
 const scribe = useScribe({
   modelId: "scribe_v2_realtime",
   commitStrategy: CommitStrategy.VAD,
+  keyterms: ["ElevenLabs", "Scribe"],
+  noVerbatim: true,
   // Optional VAD tuning:
   vadSilenceThresholdSecs: 1.5,
   vadThreshold: 0.4,
@@ -246,6 +294,8 @@ const scribe = useScribe({
 // JavaScript client: pass vad config on connect
 const connection = await client.speechToText.realtime.connect({
   modelId: "scribe_v2_realtime",
+  keyterms: ["ElevenLabs", "Scribe"],
+  noVerbatim: true,
   vad: {
     silenceThresholdSecs: 1.5,
     threshold: 0.4,
@@ -258,8 +308,13 @@ const connection = await client.speechToText.realtime.connect({
 | Event | Description |
 |-------|-------------|
 | `partial_transcript` | Live interim results |
+| `final_transcript` | Stable segment result sent before the segment is committed |
+| `final_transcript_with_timestamps` | Delayed final result with timestamps and/or detected language |
 | `committed_transcript` | Final results after commit |
 | `committed_transcript_with_timestamps` | Final with word timing |
+| `committed_transcript_entities` | Entities detected in a committed segment |
+| `edited_transcript` | Original and edited text for a committed segment when transcript editing is enabled |
+| `invalid_request` | Connection parameters were rejected and the session closes |
 | `error` | Error occurred |
 
 See real-time references for complete documentation.

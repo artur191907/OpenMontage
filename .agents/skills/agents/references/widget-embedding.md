@@ -1,6 +1,6 @@
 # Widget Embedding
 
-Add a voice AI agent to any website with the ElevenLabs conversation widget.
+Add an ElevenLabs agent to any website with the conversation widget.
 
 ## Basic Embed
 
@@ -9,7 +9,8 @@ Add a voice AI agent to any website with the ElevenLabs conversation widget.
 <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 ```
 
-This creates a floating button that users can click to start a voice conversation.
+This creates a floating launcher. Voice-only agents show a call entry point, text-only agents
+show a message entry point, and multimodal agents show both.
 
 > **Note:** Widgets currently require public agents with authentication disabled. For authenticated flows, use the SDKs.
 
@@ -50,6 +51,9 @@ This creates a floating button that users can click to start a voice conversatio
 | `server-location` | Server region (`us`, `eu-residency`, `in-residency`, `global`) | `us` |
 | `dismissible` | Allow the user to minimize the widget | `false` |
 | `disable-banner` | Hide "Powered by ElevenLabs" | `false` |
+| `show-resize-button` | Show the expand and collapse control in the widget header | `true` |
+| `mobile-fullscreen` | Open the widget fullscreen on mobile screens; set `false` to keep the compact layout (agent-level setting: `platform_settings.widget.mobile_fullscreen`) | `true` |
+| `end-confirmation` | Ask the user to confirm before ending a chat or call | `false` |
 
 ## Examples
 
@@ -91,6 +95,12 @@ This creates a floating button that users can click to start a voice conversatio
   variant="expanded"
 ></elevenlabs-convai>
 ```
+
+### File Uploads
+
+Embedded chat widgets can accept image and PDF uploads when the agent uses a multimodal LLM and
+`conversation_config.conversation.file_input.enabled` is enabled. Configure
+`max_files_per_conversation` to cap uploads per conversation.
 
 ### Full Customization
 

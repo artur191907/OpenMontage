@@ -5,24 +5,41 @@
 The ElevenLabs CLI is the recommended way to create and manage agents:
 
 ```bash
+# npm (any platform with Node.js)
 npm install -g @elevenlabs/cli
-# or
-pnpm add -g @elevenlabs/cli
-# or
-yarn global add @elevenlabs/cli
 ```
 
-Requires Node.js 16.0.0 or higher.
+```bash
+# macOS / Linux (Homebrew)
+brew install elevenlabs/tap/elevenlabs
+```
+
+```powershell
+# Windows (Scoop)
+scoop bucket add elevenlabs https://github.com/elevenlabs/scoop-bucket
+scoop install elevenlabs
+```
+
+```bash
+# Shell installer (any platform)
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/elevenlabs/cli/releases/latest/download/elevenlabs-cli-installer.sh | sh
+```
 
 ### Authentication
 
+Set `ELEVENLABS_API_KEY` in your environment — the CLI picks it up automatically:
+
 ```bash
-elevenlabs auth login          # Authenticate with API key
+export ELEVENLABS_API_KEY="your-api-key"
+```
+
+Or authenticate with OAuth, which stores credentials in the OS keyring:
+
+```bash
+elevenlabs auth login          # Authenticate with OAuth
 elevenlabs auth whoami         # Verify current login status
 elevenlabs auth logout         # Remove stored credentials
 ```
-
-API keys are securely stored in `~/.agents/api_keys.json`.
 
 ### Quick Start
 
@@ -31,7 +48,7 @@ API keys are securely stored in `~/.agents/api_keys.json`.
 elevenlabs agents init
 
 # Create an agent from template
-elevenlabs agents add "My Assistant" --template complete
+elevenlabs agents add "My Assistant" --template default
 
 # Push to ElevenLabs platform
 elevenlabs agents push
@@ -42,7 +59,7 @@ elevenlabs agents push
 For programmatic access and client-side integration:
 
 ```bash
-npm install @elevenlabs/elevenlabs-js
+npm install @elevenlabs/elevenlabs-js@latest
 ```
 
 > **Important:** Always use `@elevenlabs/elevenlabs-js`. The old `elevenlabs` npm package (v1.x) is deprecated and should not be used.
@@ -67,19 +84,31 @@ If you have old packages installed, remove them:
 npm uninstall elevenlabs
 
 # Install the current packages
-npm install @elevenlabs/elevenlabs-js
+npm install @elevenlabs/elevenlabs-js@latest
 
-# For client-side/browser usage, also install:
-npm install @elevenlabs/client  # Browser client
-npm install @elevenlabs/react   # React hooks
+# For browser apps, install the package that matches your UI layer:
+npm install @elevenlabs/client@latest  # Vanilla JavaScript in the browser
+npm install @elevenlabs/react@latest   # React on the web
 ```
 
 **Import changes:**
 ```javascript
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 import { Conversation } from "@elevenlabs/client";
-import { useConversation } from "@elevenlabs/react";
+import {
+  ConversationProvider,
+  useConversationControls,
+  useConversationStatus,
+} from "@elevenlabs/react";
 ```
+
+`@elevenlabs/react` re-exports `@elevenlabs/client`, so React apps usually only need
+`@elevenlabs/react`. Wrap hook consumers in `ConversationProvider` and prefer granular hooks
+such as `useConversationControls` and `useConversationStatus`; `useConversation` remains
+available as the convenience all-in-one hook.
+
+Use `@elevenlabs/react-native` for React Native projects with the same provider-and-hooks API;
+only the import path changes.
 
 ## Python
 
@@ -98,31 +127,25 @@ client = ElevenLabs()
 client = ElevenLabs(api_key="your-api-key")
 ```
 
-## cURL / REST API
+## CLI Usage
 
-Set your API key as an environment variable:
+Every REST endpoint is available as a CLI subcommand. Set your API key as an environment variable and the CLI picks it up automatically — no headers or key flags needed:
 
 ```bash
 export ELEVENLABS_API_KEY="your-api-key"
-```
 
-Include in requests via the `xi-api-key` header:
-
-```bash
-curl -X POST "https://api.elevenlabs.io/v1/convai/agents/create" \
-  -H "xi-api-key: $ELEVENLABS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"name": "My Agent", "conversation_config": {"agent": {"prompt": {"prompt": "You are helpful.", "llm": "gemini-2.0-flash"}}, "tts": {"voice_id": "JBFqnCBsd6RMkjVDRZzb"}}}'
+elevenlabs agents create \
+  --json '{"name": "My Agent", "conversation_config": {"agent": {"prompt": {"prompt": "You are helpful.", "llm": "gemini-2.0-flash"}}, "tts": {"voice_id": "JBFqnCBsd6RMkjVDRZzb"}}}'
 ```
 
 ## Getting an API Key
+
+Run `npx -y @elevenlabs/cli@latest onboard init` from the app's folder and follow what it prints: it signs the user in and stores a key for the project. For an existing key that stopped working or was issued by an administrator, use the `setup-api-key` skill. To do it by hand instead:
 
 1. Sign up at [elevenlabs.io](https://elevenlabs.io)
 2. Go to [API Keys](https://elevenlabs.io/app/settings/api-keys)
 3. Click **Create API Key**
 4. Copy and store securely
-
-Or use the `setup-api-key` skill for guided setup.
 
 ## Environment Variables
 

@@ -6,10 +6,10 @@ Transcribe audio streams in real-time from your server with ultra-low latency.
 
 ```bash
 # Python
-pip install elevenlabs python-dotenv pydub
+pip install --upgrade elevenlabs python-dotenv pydub
 
 # JavaScript
-npm install @elevenlabs/elevenlabs-js dotenv
+npm install @elevenlabs/elevenlabs-js@latest dotenv
 ```
 
 > **Warning:** Do not use `npm install elevenlabs` - that's an outdated v1.x package. Always use `@elevenlabs/elevenlabs-js`.
@@ -22,6 +22,23 @@ Store your API key in a `.env` file:
 ELEVENLABS_API_KEY=<your_api_key_here>
 ```
 
+## Realtime Session Options
+
+| Purpose | Python / WebSocket | JavaScript |
+|---------|--------------------|------------|
+| Limit language detection to expected additional languages | `secondary_languages` | `secondaryLanguages` |
+| Return detected language in delayed final events | `include_language_detection` | `includeLanguageDetection` |
+| Detect entities in committed segments | `entity_detection` | `entityDetection` |
+| Apply a natural-language edit instruction to committed segments | `transcript_edit` | `transcriptEdit` |
+| Reduce false activation from background speech and noise | `filter_background_audio` | `filterBackgroundAudio` |
+| Disable history and logging for an enterprise zero-retention session | `enable_logging=False` | `enableLogging: false` |
+
+`secondary_languages` accepts additional ISO-639-1 or ISO-639-3 codes. Entity detection accepts
+`all`, a supported entity type or category, or a list of them. Background audio filtering cannot be
+combined with timestamp output. A transcript edit instruction can contain up to 2,000 characters
+and cannot be combined with entity detection. It adds a 30% premium, billed for at least 10 seconds
+of audio per committed transcript.
+
 ## Stream from URL
 
 ### Python
@@ -31,7 +48,7 @@ from dotenv import load_dotenv
 import os
 import asyncio
 from elevenlabs import ElevenLabs
-from elevenlabs import RealtimeEvents, RealtimeUrlOptions
+from elevenlabs import CommitStrategy, RealtimeEvents, RealtimeUrlOptions
 
 load_dotenv()
 
@@ -42,7 +59,10 @@ async def main():
     connection = await elevenlabs.speech_to_text.realtime.connect(RealtimeUrlOptions(
         model_id="scribe_v2_realtime",
         url="https://npr-ice.streamguys1.com/live.mp3",
+        commit_strategy=CommitStrategy.VAD,  # URL streams never commit on their own
         include_timestamps=True,
+        keyterms=["ElevenLabs", "Scribe"],
+        no_verbatim=True,
     ))
 
     def on_partial_transcript(data):
@@ -86,6 +106,8 @@ const connection = await elevenlabs.speechToText.realtime.connect({
   modelId: "scribe_v2_realtime",
   url: "https://npr-ice.streamguys1.com/live.mp3",
   includeTimestamps: true,
+  keyterms: ["ElevenLabs", "Scribe"],
+  noVerbatim: true,
 });
 
 connection.on(RealtimeEvents.PARTIAL_TRANSCRIPT, (transcript) => {
@@ -285,6 +307,30 @@ For cases where the SDK cannot be used:
 ```
 wss://api.elevenlabs.io/v1/speech-to-text/realtime?model_id=scribe_v2_realtime
 ```
+
+Add repeated `keyterms` query parameters to bias recognition toward specific terms, and set
+`no_verbatim=true` to remove filler words, false starts, and disfluencies. Add repeated
+`secondary_languages` parameters with ISO-639-1 or ISO-639-3 codes when the audio may contain
+additional languages:
+
+```
+wss://api.elevenlabs.io/v1/speech-to-text/realtime?model_id=scribe_v2_realtime&keyterms=ElevenLabs&keyterms=Scribe&secondary_languages=es&secondary_languages=fr&no_verbatim=true
+```
+
+### Entity Detection
+
+Add `entity_detection` to detect entities in committed segments. It accepts `all`, one entity type
+or category, or a comma-separated list. Categories include `pii`, `phi`, `pci`, `other`, and
+`offensive_language`:
+
+```
+wss://api.elevenlabs.io/v1/speech-to-text/realtime?model_id=scribe_v2_realtime&entity_detection=pii,pci
+```
+
+Each committed segment is followed by a `committed_transcript_entities` event containing the
+detected entity text, type, and character offsets. See the
+[entity detection guide](https://elevenlabs.io/docs/eleven-api/guides/how-to/speech-to-text/batch/entity-detection)
+for specific entity types.
 
 ### Message Format
 
