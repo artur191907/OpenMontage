@@ -80,3 +80,12 @@
 | `FAL_KEY` | генерация видеоклипов (Kling, Veo) для «пиксаровского» вида, ~$1–5 за ролик |
 
 Добавлять так же: Network secret для сайта сервиса плюс заглушка в Environment variables.
+
+## Плагин /watch (смотреть видео)
+
+Прописан в `.claude/settings.json` (Aiworksolutions/claude-video-skill, MIT). Claude Code ставит его сам при открытии проекта.
+Примеры:
+- `/watch <ссылка на вирусный TikTok> разбери крючок первых 3 секунд, тайминг шуток и структуру`
+- `/watch <путь к нашей серии> найди скучные места и проблемы со звуком/субтитрами`
+
+Нужны ffmpeg и yt-dlp (`pip install yt-dlp`). Для видео без субтитров — ключ `GROQ_API_KEY` или `OPENAI_API_KEY`.
