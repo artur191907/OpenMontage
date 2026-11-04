@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "claude-video": {
+      "source": {
+        "source": "github",
+        "repo": "Aiworksolutions/claude-video-skill"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "watch@claude-video": true
+  }
+}
